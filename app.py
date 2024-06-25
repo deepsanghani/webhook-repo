@@ -20,26 +20,29 @@ def webhook():
     if 'pull_request' in data:
         if data['action'] == 'closed' and data['pull_request']['merged']:
             event = {
-                'type': 'MERGE',
+                'action': 'MERGE',
                 'author': data['sender']['login'],
                 'from_branch': data['pull_request']['head']['ref'],
                 'to_branch': data['pull_request']['base']['ref'],
-                'timestamp': parser.isoparse(data['pull_request']['merged_at'])
+                'timestamp': parser.isoparse(data['pull_request']['merged_at']),
+                'request_id': data['pull_request']['id']
             }
         else:
             event = {
-                'type': 'PULL_REQUEST',
+                'action': 'PULL_REQUEST',
                 'author': data['sender']['login'],
                 'from_branch': data['pull_request']['head']['ref'],
                 'to_branch': data['pull_request']['base']['ref'],
-                'timestamp': parser.isoparse(data['pull_request']['created_at'])
+                'timestamp': parser.isoparse(data['pull_request']['created_at']),
+                'request_id': data['pull_request']['id']
             }
     elif 'ref' in data and 'head_commit' in data and data['head_commit']:
         event = {
-            'type': 'PUSH',
+            'action': 'PUSH',
             'author': data['head_commit']['author']['name'],
             'to_branch': data['ref'].split('/').pop(),
-            'timestamp': parser.isoparse(data['head_commit']['timestamp'])
+            'timestamp': parser.isoparse(data['head_commit']['timestamp']),
+            'request_id': None  # No request ID for push events
         }
 
     events_collection.insert_one(event)

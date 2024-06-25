@@ -7,13 +7,15 @@ async function fetchEvents() {
     events.forEach(event => {
         let listItem = document.createElement('li');
         let text = '';
+        let eventDate = new Date(event.timestamp);
+        let options = { timeZone: 'Asia/Kolkata', dateStyle: 'long', timeStyle: 'short' };
 
-        if (event.type === 'PUSH') {
-            text = `${event.author} pushed to ${event.to_branch} on ${new Date(event.timestamp).toLocaleString()}`
-        } else if (event.type === 'PULL_REQUEST') {
-            text = `${event.author} submitted a pull request from ${event.from_branch} to ${event.to_branch} on ${new Date(event.timestamp).toLocaleString()}`
-        } else if (event.type === 'MERGE') {
-            text = `${event.author} merged branch ${event.from_branch} to ${event.to_branch} on ${new Date(event.timestamp).toLocaleString()}`
+        if (event.action === 'PUSH') {
+            text = `${event.author} pushed to ${event.to_branch} on ${eventDate.toLocaleString('en-IN', options)} IST`;
+        } else if (event.action === 'PULL_REQUEST') {
+            text = `${event.author} submitted a pull request from ${event.from_branch} to ${event.to_branch} on ${eventDate.toLocaleString('en-IN', options)} IST`;
+        } else if (event.action === 'MERGE') {
+            text = `${event.author} merged branch ${event.from_branch} to ${event.to_branch} on ${eventDate.toLocaleString('en-IN', options)} IST`;
         }
 
         listItem.textContent = text;
