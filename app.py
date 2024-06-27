@@ -16,7 +16,7 @@ def index():
 def webhook():
     data = request.json
     event = {}
-    
+    print(data)
     if 'pull_request' in data:
         if data['action'] == 'closed' and data['pull_request']['merged']:
             event = {
